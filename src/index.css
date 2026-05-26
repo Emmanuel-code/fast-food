@@ -1,0 +1,200 @@
+/* stylelint-disable */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Chef's Kitchen Design System - Warm Fast-Food Theme */
+
+@layer base {
+  :root {
+    --radius: 0.625rem;
+
+    /* Primary: Warm Amber */
+    --primary: 38 92% 50%;
+    --primary-foreground: 30 100% 10%;
+
+    /* Secondary: Soft Cream */
+    --secondary: 40 60% 94%;
+    --secondary-foreground: 30 50% 20%;
+
+    /* Background & Card */
+    --background: 40 30% 97%;
+    --foreground: 30 25% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 30 25% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 30 25% 12%;
+
+    /* Muted */
+    --muted: 38 20% 92%;
+    --muted-foreground: 30 15% 42%;
+
+    /* Accent: Deep Brown */
+    --accent: 28 40% 92%;
+    --accent-foreground: 28 60% 18%;
+
+    /* Status */
+    --destructive: 0 84% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 70% 35%;
+    --warning: 38 92% 50%;
+    --info: 210 80% 45%;
+
+    /* Border & Input */
+    --border: 38 25% 86%;
+    --input: 38 25% 86%;
+    --ring: 38 92% 50%;
+
+    /* Sidebar - Dark Brown */
+    --sidebar-background: 28 55% 14%;
+    --sidebar-foreground: 40 60% 92%;
+    --sidebar-primary: 38 92% 50%;
+    --sidebar-primary-foreground: 30 100% 10%;
+    --sidebar-accent: 28 50% 20%;
+    --sidebar-accent-foreground: 40 60% 92%;
+    --sidebar-border: 28 40% 22%;
+    --sidebar-ring: 38 92% 50%;
+
+    /* Charts */
+    --chart-1: 38 92% 50%;
+    --chart-2: 142 70% 35%;
+    --chart-3: 28 55% 45%;
+    --chart-4: 210 80% 45%;
+    --chart-5: 0 84% 55%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(38 92% 50%), hsl(28 85% 45%));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(40 30% 97%));
+    --gradient-background: linear-gradient(180deg, hsl(40 30% 97%), hsl(38 20% 92%));
+
+    /* Shadows */
+    --shadow-card: 0 2px 8px rgba(120, 53, 15, 0.08), 0 1px 2px rgba(120, 53, 15, 0.04);
+    --shadow-hover: 0 8px 24px rgba(120, 53, 15, 0.14), 0 2px 4px rgba(120, 53, 15, 0.08);
+
+    /* Education (kept for compatibility) */
+    --education-blue: 210 80% 45%;
+    --education-green: 142 70% 35%;
+  }
+
+  .dark {
+    --primary: 38 92% 50%;
+    --primary-foreground: 30 100% 10%;
+
+    --secondary: 28 30% 20%;
+    --secondary-foreground: 40 60% 88%;
+
+    --background: 28 25% 9%;
+    --foreground: 40 50% 92%;
+    --card: 28 25% 12%;
+    --card-foreground: 40 50% 92%;
+    --popover: 28 25% 12%;
+    --popover-foreground: 40 50% 92%;
+
+    --muted: 28 20% 18%;
+    --muted-foreground: 38 20% 60%;
+
+    --accent: 28 25% 18%;
+    --accent-foreground: 40 60% 88%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 60% 42%;
+    --warning: 38 92% 50%;
+    --info: 210 70% 55%;
+
+    --border: 28 20% 22%;
+    --input: 28 20% 22%;
+    --ring: 38 92% 50%;
+
+    --sidebar-background: 28 35% 8%;
+    --sidebar-foreground: 40 50% 88%;
+    --sidebar-primary: 38 92% 50%;
+    --sidebar-primary-foreground: 30 100% 10%;
+    --sidebar-accent: 28 30% 14%;
+    --sidebar-accent-foreground: 40 50% 88%;
+    --sidebar-border: 28 30% 16%;
+    --sidebar-ring: 38 92% 50%;
+
+    --chart-1: 38 92% 55%;
+    --chart-2: 142 60% 45%;
+    --chart-3: 28 55% 55%;
+    --chart-4: 210 70% 55%;
+    --chart-5: 0 70% 55%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(38 92% 50%), hsl(28 85% 45%));
+    --gradient-card: linear-gradient(180deg, hsl(28 25% 12%), hsl(28 20% 10%));
+    --gradient-background: linear-gradient(180deg, hsl(28 25% 9%), hsl(28 20% 7%));
+
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.25);
+
+    --education-blue: 210 70% 55%;
+    --education-green: 142 60% 42%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-balance;
+  }
+
+  p {
+    @apply text-pretty;
+  }
+}
+
+@layer utilities {
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-primary);
+  }
+
+  .text-success {
+    color: hsl(var(--success));
+  }
+
+  .text-warning {
+    color: hsl(var(--warning));
+  }
+
+  .text-info {
+    color: hsl(var(--info));
+  }
+
+  .bg-success {
+    background-color: hsl(var(--success));
+  }
+
+  .bg-warning {
+    background-color: hsl(var(--warning));
+  }
+
+  .bg-info {
+    background-color: hsl(var(--info));
+  }
+
+  .border-success {
+    border-color: hsl(var(--success));
+  }
+}
