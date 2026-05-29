@@ -296,16 +296,49 @@ export default function Settings() {
                   className="h-9 px-3 text-sm"
                 />
               </div>
+            </div>
+          </section>
+
+          {/* Location settings */}
+          <section className="bg-card rounded-xl border border-border p-4 space-y-3">
+            <div>
+              <h2 className="font-semibold text-foreground">Restaurant Location</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">Used on the customer Location page map and footer.</p>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Address</Label>
+              <Input
+                value={form.restaurant_address || ''}
+                onChange={e => setForm(p => ({ ...p, restaurant_address: e.target.value }))}
+                className="h-9 px-3 text-sm"
+                placeholder="e.g. Catholic Road, Navrongo, UER, Ghana"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Restaurant address</Label>
+                <Label className="text-xs text-muted-foreground">Latitude</Label>
                 <Input
-                  value={form.restaurant_address || ''}
-                  onChange={e => setForm(p => ({ ...p, restaurant_address: e.target.value }))}
-                  className="h-9 px-3 text-sm"
-                  placeholder="123 Main St..."
+                  type="number"
+                  step="0.0001"
+                  value={form.restaurant_lat ?? 10.8941}
+                  onChange={e => setForm(p => ({ ...p, restaurant_lat: parseFloat(e.target.value) || 10.8941 }))}
+                  className="h-9 px-3 text-sm font-mono"
+                  placeholder="10.8941"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">Longitude</Label>
+                <Input
+                  type="number"
+                  step="0.0001"
+                  value={form.restaurant_lng ?? -1.0944}
+                  onChange={e => setForm(p => ({ ...p, restaurant_lng: parseFloat(e.target.value) || -1.0944 }))}
+                  className="h-9 px-3 text-sm font-mono"
+                  placeholder="-1.0944"
                 />
               </div>
             </div>
+            <p className="text-[11px] text-muted-foreground">💡 Tip: Find your exact lat/lng on Google Maps by right-clicking your location.</p>
           </section>
         </div>
       </div>

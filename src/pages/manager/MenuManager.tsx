@@ -23,7 +23,7 @@ const EMPTY_ITEM: Omit<MenuItem, 'id' | 'created_at'> = {
   description: '',
   image_url: '',
   price: 0,
-  category: 'Burgers',
+  category: 'Rice Dishes',
   dietary_tags: [],
   available: true,
   limited_stock: null,

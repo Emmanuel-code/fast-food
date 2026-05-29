@@ -141,7 +141,7 @@ export interface RestaurantSettings {
   restaurant_lng: number;
 }
 
-export const MENU_CATEGORIES = ['Burgers', 'Sides', 'Drinks', 'Desserts', 'Meal Deals'] as const;
+export const MENU_CATEGORIES = ['Rice Dishes', 'Local Dishes', 'Pizza', 'Sides', 'Drinks'] as const;
 export type MenuCategory = typeof MENU_CATEGORIES[number];
 
 export const DAY_NAMES = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const;

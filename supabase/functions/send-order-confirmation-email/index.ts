@@ -5,6 +5,11 @@ const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// White-label brand config — set these in Supabase Edge Function secrets
+const APP_NAME = Deno.env.get("APP_NAME") ?? "Our Kitchen";
+const APP_EMAIL_FROM = Deno.env.get("APP_EMAIL_FROM") ?? "orders@yourkitchen.com";
+const APP_EMAIL_TAGLINE = Deno.env.get("APP_EMAIL_TAGLINE") ?? `Thank you for ordering from ${APP_NAME}! 🍽️`;
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -73,7 +78,7 @@ function buildEmailHtml(order: {
   <div style="max-width:520px;margin:32px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(120,53,15,0.08);">
     <!-- Header -->
     <div style="background:#b45309;padding:28px 32px;text-align:center;">
-      <h1 style="margin:0;color:#fff;font-size:22px;font-weight:700;">Chef's Kitchen</h1>
+      <h1 style="margin:0;color:#fff;font-size:22px;font-weight:700;">${APP_NAME}</h1>
       <p style="margin:6px 0 0;color:rgba(255,255,255,0.85);font-size:14px;">Order Confirmed ✓</p>
     </div>
     <!-- Body -->
@@ -140,7 +145,7 @@ function buildEmailHtml(order: {
     </div>
     <!-- Footer -->
     <div style="background:#faf9f6;padding:20px 32px;text-align:center;border-top:1px solid #f3f4f6;">
-      <p style="margin:0;font-size:13px;color:#6b7280;">Thank you for ordering from Chef's Kitchen, Navrongo! 🍽️</p>
+      <p style="margin:0;font-size:13px;color:#6b7280;">${APP_EMAIL_TAGLINE}</p>
     </div>
   </div>
 </body>
@@ -188,7 +193,7 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Chef's Kitchen <orders@chefskitchen.gh>",
+        from: `${APP_NAME} <${APP_EMAIL_FROM}>`,
         to: [customerEmail],
         subject: `Order Confirmed — ${order.order_number}`,
         html,

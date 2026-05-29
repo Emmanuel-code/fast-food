@@ -23,6 +23,8 @@ const managerNav = [
   { to: '/dashboard/settings', icon: Settings, label: 'Settings' },
 ];
 
+import { tenantConfig } from '@/config/tenantConfig';
+
 function SidebarContent({ onClose }: { isAdmin?: boolean; onClose?: () => void }) {
   const { profile, signOut } = useAuth();
   const navigate = useNavigate();
@@ -41,7 +43,7 @@ function SidebarContent({ onClose }: { isAdmin?: boolean; onClose?: () => void }
             <ChefHat size={20} className="text-primary-foreground" />
           </div>
           <div className="min-w-0">
-            <p className="font-bold text-sidebar-foreground text-sm truncate">Chef's Kitchen</p>
+            <p className="font-bold text-sidebar-foreground text-sm truncate">{tenantConfig.appName}</p>
             <div className="flex items-center gap-2 mt-0.5">
               <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-primary/20 text-primary border-0 capitalize">
                 {profile?.role}

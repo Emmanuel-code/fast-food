@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { ChefHat, Clock, ShoppingBag, AlertCircle, CalendarClock, Plus, Star } from 'lucide-react';
 import { formatCurrency } from '@/utils/timeSlots';
 import { toast } from 'sonner';
+import { tenantConfig } from '@/config/tenantConfig';
 
 const DIETARY_COLORS: Record<string, string> = {
   vegetarian: 'bg-green-100 text-green-700 border-green-200',
@@ -43,7 +44,9 @@ function MenuItemCard({ item }: { item: MenuItem }) {
 
   return (
     <div
-      className={`bg-card rounded-xl border border-border shadow-card overflow-hidden h-full flex flex-col transition-shadow ${isSoldOut ? 'opacity-60 cursor-default' : 'cursor-pointer hover:shadow-hover'}`}
+      className={`premium-card overflow-hidden h-full flex flex-col transition-all duration-300 ${
+        isSoldOut ? 'opacity-60 cursor-default hover:translate-y-0 hover:shadow-card' : 'cursor-pointer'
+      }`}
       onClick={() => !isSoldOut && navigate(`/menu/${item.id}`)}
     >
       <div className="aspect-[4/3] w-full overflow-hidden bg-muted relative">
@@ -51,52 +54,54 @@ function MenuItemCard({ item }: { item: MenuItem }) {
           <img
             src={item.image_url}
             alt={item.name}
-            className={`w-full h-full object-cover ${isSoldOut ? 'grayscale' : ''}`}
+            className={`w-full h-full object-cover transition-transform duration-500 hover:scale-105 ${
+              isSoldOut ? 'grayscale' : ''
+            }`}
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-            <ChefHat size={32} />
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground bg-secondary/35">
+            <ChefHat size={32} className="text-primary/70 animate-pulse" />
           </div>
         )}
         {isSoldOut && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="bg-destructive text-white text-xs font-bold px-2.5 py-1 rounded-full shadow">
+          <div className="absolute inset-0 flex items-center justify-center bg-background/40 backdrop-blur-[2px]">
+            <span className="bg-destructive text-white text-[10px] uppercase tracking-widest font-extrabold px-3 py-1 rounded-full shadow-lg">
               Sold Out
             </span>
           </div>
         )}
       </div>
-      <div className="p-3 flex flex-col flex-1">
-        <h3 className="font-semibold text-sm text-foreground text-balance">{item.name}</h3>
+      <div className="p-3.5 flex flex-col flex-1">
+        <h3 className="font-bold text-sm text-foreground tracking-tight line-clamp-1">{item.name}</h3>
         {item.description && (
-          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2 text-pretty">{item.description}</p>
+          <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2 leading-relaxed">{item.description}</p>
         )}
         {/* Rating */}
         {item.review_count > 0 && (
-          <div className="flex items-center gap-1 mt-1">
+          <div className="flex items-center gap-1 mt-2">
             <Star size={11} className="fill-primary text-primary" />
-            <span className="text-[11px] text-muted-foreground font-medium">
-              {Number(item.average_rating).toFixed(1)} ({item.review_count})
+            <span className="text-[10px] text-muted-foreground font-semibold">
+              {Number(item.average_rating).toFixed(1)} ({item.review_count} reviews)
             </span>
           </div>
         )}
-        <div className="flex flex-wrap gap-1 mt-1.5">
+        <div className="flex flex-wrap gap-1 mt-2.5">
           {item.dietary_tags.slice(0, 2).map(tag => (
-            <span key={tag} className={`text-[10px] px-1.5 py-0.5 rounded-full border ${DIETARY_COLORS[tag] || 'bg-muted text-muted-foreground border-border'}`}>
+            <span key={tag} className={`text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-md border ${DIETARY_COLORS[tag] || 'bg-muted text-muted-foreground border-border'}`}>
               {tag}
             </span>
           ))}
         </div>
-        <div className="flex items-center justify-between mt-auto pt-2">
-          <span className="font-bold text-primary text-sm">{formatCurrency(item.price)}</span>
+        <div className="flex items-center justify-between mt-4 pt-2 border-t border-border/50">
+          <span className="font-extrabold text-primary text-base tracking-tight">{formatCurrency(item.price)}</span>
           <button
             onClick={handleQuickAdd}
             disabled={isSoldOut}
-            className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-8 h-8 rounded-xl bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95 shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
             aria-label={`Add ${item.name} to cart`}
           >
-            <Plus size={16} />
+            <Plus size={16} strokeWidth={2.5} />
           </button>
         </div>
       </div>
@@ -168,24 +173,26 @@ export default function Home() {
   return (
     <CustomerLayout>
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border px-4 py-3">
+      <div className="sticky top-0 z-40 bg-card/80 backdrop-blur-xl border-b border-border/50 px-4 py-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <ChefHat size={16} className="text-primary-foreground" />
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-md shrink-0"
+              style={{ background: 'linear-gradient(135deg, hsl(38 100% 50%), hsl(24 95% 45%))' }}>
+              <ChefHat size={17} className="text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-bold text-foreground text-sm">Chef's Kitchen</h1>
-              <div className="flex items-center gap-1">
-                <div className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-success' : 'bg-destructive'}`} />
-                <span className="text-[11px] text-muted-foreground">{isOpen ? 'Open Now' : 'Closed'}</span>
+              <h1 className="font-black text-foreground text-sm tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>{tenantConfig.appName}</h1>
+              <div className="flex items-center gap-1.5">
+                <span className={`inline-block w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-success animate-pulse' : 'bg-destructive'}`} />
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">{isOpen ? 'Open Now' : 'Closed'}</span>
               </div>
             </div>
           </div>
           {profile && (
-            <span className="text-sm text-muted-foreground">
-              Hi, {profile.name?.split(' ')[0] || 'there'} 👋
-            </span>
+            <div className="flex items-center gap-1.5 bg-muted px-3 py-1.5 rounded-full">
+              <span className="text-xs font-bold text-foreground">Hi, {profile.name?.split(' ')[0] || 'there'}</span>
+              <span className="text-sm">👋</span>
+            </div>
           )}
         </div>
       </div>
@@ -194,26 +201,30 @@ export default function Home() {
         {/* Status Banner */}
         {isOpen ? (
           <div
-            className="rounded-2xl p-4 flex items-center gap-3 cursor-pointer"
-            style={{ background: 'var(--gradient-primary)' }}
+            className="rounded-3xl p-5 flex items-center gap-4 cursor-pointer transition-transform duration-200 hover:scale-[1.01] active:scale-[0.99] relative overflow-hidden"
+            style={{ background: 'linear-gradient(135deg, hsl(38 100% 50%), hsl(24 95% 45%))' }}
             onClick={() => navigate('/menu')}
           >
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
-              <ShoppingBag size={20} className="text-white" />
+            {/* Decorative circles */}
+            <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-white/10" />
+            <div className="absolute -bottom-4 right-10 w-16 h-16 rounded-full bg-white/5" />
+            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center shrink-0 backdrop-blur-sm">
+              <ShoppingBag size={22} className="text-white" />
             </div>
-            <div className="min-w-0">
-              <p className="font-bold text-white text-sm">We're cooking! Order now</p>
-              <p className="text-white/80 text-xs mt-0.5">Fresh meals ready in ~{settings?.prep_time_estimate_minutes ?? 15} mins</p>
+            <div className="min-w-0 flex-1">
+              <p className="font-black text-white text-base tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>We're cooking! 🔥</p>
+              <p className="text-white/80 text-xs mt-0.5 font-medium">Fresh meals ready in ~{settings?.prep_time_estimate_minutes ?? 15} mins</p>
             </div>
+            <div className="text-white/60 text-lg">›</div>
           </div>
         ) : (
-          <div className="rounded-2xl p-4 bg-muted border border-border">
+          <div className="rounded-3xl p-5 bg-muted border border-border">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
+              <div className="w-11 h-11 bg-primary/10 rounded-2xl flex items-center justify-center shrink-0">
                 <AlertCircle size={20} className="text-primary" />
               </div>
               <div className="min-w-0">
-                <p className="font-bold text-foreground text-sm">Chef's Kitchen is closed for today – thank you! 🍔</p>
+                <p className="font-bold text-foreground text-sm">{tenantConfig.appName} is closed for today – thank you! 🍔</p>
                 <p className="text-muted-foreground text-xs mt-1 text-pretty">
                   {settings?.custom_closed_message || 'We will be back soon!'}
                 </p>
@@ -254,15 +265,17 @@ export default function Home() {
           <div
             ref={categoryRef}
             className="flex gap-2 overflow-x-auto pb-1 whitespace-nowrap"
+            style={{ scrollbarWidth: 'none' }}
           >
             {categories.map(cat => (
               <button
                 key={cat}
+                type="button"
                 onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors shrink-0 ${
+                className={`px-4 py-2 rounded-xl text-sm font-bold border transition-all duration-200 shrink-0 ${
                   activeCategory === cat
-                    ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-card text-muted-foreground border-border hover:text-foreground'
+                    ? 'bg-primary text-primary-foreground border-primary shadow-md scale-105'
+                    : 'bg-card text-muted-foreground border-border hover:text-foreground hover:border-primary/40'
                 }`}
               >
                 {cat}
@@ -273,16 +286,19 @@ export default function Home() {
 
         {/* Menu grid */}
         {menuLoading ? (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3.5">
             {[...Array(6)].map((_, i) => <MenuItemSkeleton key={i} />)}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16">
-            <ChefHat size={40} className="mx-auto text-muted-foreground/40 mb-3" />
-            <p className="text-muted-foreground">No items available right now</p>
+          <div className="text-center py-20">
+            <div className="w-20 h-20 mx-auto rounded-3xl bg-muted flex items-center justify-center mb-4">
+              <ChefHat size={36} className="text-muted-foreground/40" />
+            </div>
+            <p className="text-muted-foreground font-medium">No items available right now</p>
+            <p className="text-xs text-muted-foreground/70 mt-1">Check back soon for fresh arrivals</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 pb-4">
+          <div className="grid grid-cols-2 gap-3.5 pb-4">
             {filtered.map(item => (
               <MenuItemCard key={item.id} item={item} />
             ))}

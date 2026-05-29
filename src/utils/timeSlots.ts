@@ -67,7 +67,7 @@ export function parseTimeSlotToDate(slot: string, date: Date): Date {
 }
 
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+  return new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS' }).format(amount);
 }
 
 export function formatDate(dateStr: string): string {

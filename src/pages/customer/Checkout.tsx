@@ -57,15 +57,15 @@ export default function Checkout() {
     setTimeSlots(generateTimeSlots(selectedDate, settings));
   }, [selectedDate, settings]);
 
-  if (items.length === 0) {
-    navigate('/cart');
-    return null;
-  }
+  useEffect(() => {
+    if (items.length === 0) navigate('/cart');
+  }, [items.length, navigate]);
 
-  if (!user) {
-    navigate('/login');
-    return null;
-  }
+  useEffect(() => {
+    if (!user) navigate('/login');
+  }, [user, navigate]);
+
+  if (items.length === 0 || !user) return null;
 
   const deliveryFee = orderType === 'delivery' ? (settings?.delivery_fee ?? 3.99) : 0;
   const tipAmount = customTip ? parseFloat(customTip) : subtotal * (tipPct / 100);
@@ -228,30 +228,38 @@ export default function Checkout() {
 
   return (
     <CustomerLayout>
-      <div className="px-4 pt-5 pb-4">
-        <button onClick={() => navigate('/cart')} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4">
-          <ArrowLeft size={16} />
-          Back to Cart
+      {/* Sticky header */}
+      <div className="sticky top-0 z-40 bg-card/80 backdrop-blur-xl border-b border-border/50 px-4 py-3 flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => navigate('/cart')}
+          className="w-8 h-8 rounded-xl bg-muted flex items-center justify-center hover:bg-accent transition-colors shrink-0"
+        >
+          <ArrowLeft size={15} />
         </button>
-        <h1 className="text-xl font-bold text-foreground">Checkout</h1>
+        <h1 className="text-lg font-black tracking-tight text-foreground" style={{ fontFamily: 'Outfit, sans-serif' }}>Checkout</h1>
       </div>
 
-      <div className="px-4 pb-40 space-y-5">
+      <div className="px-4 pt-4 pb-40 space-y-4">
         {/* Order type */}
-        <section className="bg-card rounded-xl border border-border p-4 space-y-3">
-          <h2 className="font-semibold text-sm text-foreground">Order Type</h2>
+        <section className="premium-card p-4 space-y-3">
+          <h2 className="font-black text-sm text-foreground" style={{ fontFamily: 'Outfit, sans-serif' }}>Order Type</h2>
           <div className="grid grid-cols-3 gap-2">
             {(['pickup', 'delivery', 'curbside'] as OrderType[]).map(t => (
               <button
                 key={t}
+                type="button"
                 onClick={() => setOrderType(t)}
-                className={`py-3 rounded-xl text-xs font-semibold border capitalize transition-colors ${
-                  orderType === t ? 'bg-primary text-primary-foreground border-primary' : 'bg-muted text-muted-foreground border-border hover:border-primary/50'
+                className={`py-4 rounded-2xl text-xs font-bold border capitalize transition-all duration-200 flex flex-col items-center gap-1.5 ${
+                  orderType === t
+                    ? 'text-primary-foreground border-transparent shadow-md scale-[1.03]'
+                    : 'bg-muted text-muted-foreground border-border hover:border-primary/50 hover:text-foreground'
                 }`}
+                style={orderType === t ? { background: 'linear-gradient(135deg, hsl(38 100% 50%), hsl(24 95% 45%))' } : {}}
               >
-                {t === 'pickup' && <UtensilsCrossed size={14} className="mx-auto mb-1" />}
-                {t === 'delivery' && <MapPin size={14} className="mx-auto mb-1" />}
-                {t === 'curbside' && <Car size={14} className="mx-auto mb-1" />}
+                {t === 'pickup' && <UtensilsCrossed size={18} />}
+                {t === 'delivery' && <MapPin size={18} />}
+                {t === 'curbside' && <Car size={18} />}
                 {t}
               </button>
             ))}
@@ -260,74 +268,52 @@ export default function Checkout() {
 
         {/* Delivery address */}
         {orderType === 'delivery' && (
-          <section className="bg-card rounded-xl border border-border p-4 space-y-3">
-            <h2 className="font-semibold text-sm text-foreground flex items-center gap-2">
-              <MapPin size={14} />
+          <section className="premium-card p-4 space-y-3">
+            <h2 className="font-black text-sm text-foreground flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              <MapPin size={14} className="text-primary" />
               Delivery Address
             </h2>
             <div className="space-y-2">
-              <Input
-                placeholder="Street address"
-                value={deliveryAddr.line1}
-                onChange={e => setDeliveryAddr(p => ({ ...p, line1: e.target.value }))}
-                className="h-10 px-3 text-sm"
-              />
+              <Input placeholder="Street address" value={deliveryAddr.line1} onChange={e => setDeliveryAddr(p => ({ ...p, line1: e.target.value }))} className="h-11 px-3 text-sm rounded-xl" />
               <div className="grid grid-cols-2 gap-2">
-                <Input
-                  placeholder="City"
-                  value={deliveryAddr.city}
-                  onChange={e => setDeliveryAddr(p => ({ ...p, city: e.target.value }))}
-                  className="h-10 px-3 text-sm"
-                />
-                <Input
-                  placeholder="State"
-                  value={deliveryAddr.state}
-                  onChange={e => setDeliveryAddr(p => ({ ...p, state: e.target.value }))}
-                  className="h-10 px-3 text-sm"
-                />
+                <Input placeholder="City" value={deliveryAddr.city} onChange={e => setDeliveryAddr(p => ({ ...p, city: e.target.value }))} className="h-11 px-3 text-sm rounded-xl" />
+                <Input placeholder="State" value={deliveryAddr.state} onChange={e => setDeliveryAddr(p => ({ ...p, state: e.target.value }))} className="h-11 px-3 text-sm rounded-xl" />
               </div>
-              <Input
-                placeholder="ZIP code"
-                value={deliveryAddr.zip}
-                onChange={e => setDeliveryAddr(p => ({ ...p, zip: e.target.value }))}
-                className="h-10 px-3 text-sm"
-              />
+              <Input placeholder="ZIP code" value={deliveryAddr.zip} onChange={e => setDeliveryAddr(p => ({ ...p, zip: e.target.value }))} className="h-11 px-3 text-sm rounded-xl" />
             </div>
           </section>
         )}
 
         {/* Curbside vehicle */}
         {orderType === 'curbside' && (
-          <section className="bg-card rounded-xl border border-border p-4 space-y-3">
-            <h2 className="font-semibold text-sm text-foreground flex items-center gap-2">
-              <Car size={14} />
+          <section className="premium-card p-4 space-y-3">
+            <h2 className="font-black text-sm text-foreground flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              <Car size={14} className="text-primary" />
               Vehicle Description
             </h2>
-            <Input
-              placeholder="e.g. Red Honda Civic"
-              value={curbsideVehicle}
-              onChange={e => setCurbsideVehicle(e.target.value)}
-              className="h-10 px-3 text-sm"
-            />
+            <Input placeholder="e.g. Red Honda Civic" value={curbsideVehicle} onChange={e => setCurbsideVehicle(e.target.value)} className="h-11 px-3 text-sm rounded-xl" />
           </section>
         )}
 
         {/* Date & Time */}
-        <section className="bg-card rounded-xl border border-border p-4 space-y-3">
-          <h2 className="font-semibold text-sm text-foreground flex items-center gap-2">
-            <Calendar size={14} />
+        <section className="premium-card p-4 space-y-3">
+          <h2 className="font-black text-sm text-foreground flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <Calendar size={14} className="text-primary" />
             Date &amp; Time
           </h2>
 
           {isOpen && (
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl bg-muted/60 hover:bg-muted transition-colors">
               <input
                 type="checkbox"
                 checked={isAsap}
                 onChange={e => setIsAsap(e.target.checked)}
-                className="accent-primary"
+                className="accent-primary w-4 h-4"
               />
-              <span className="text-sm font-medium text-foreground">ASAP (as soon as possible)</span>
+              <div>
+                <span className="text-sm font-bold text-foreground">ASAP</span>
+                <p className="text-xs text-muted-foreground">Ready in ~{settings?.prep_time_estimate_minutes ?? 15} mins</p>
+              </div>
             </label>
           )}
 
@@ -335,17 +321,19 @@ export default function Checkout() {
             <>
               {/* Date selector */}
               <div>
-                <Label className="text-xs text-muted-foreground mb-1.5 block">Select Date</Label>
-                <div className="flex gap-2 overflow-x-auto pb-1">
+                <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Select Date</Label>
+                <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
                   {availableDates.map((date, i) => {
                     const isSelected = selectedDate && format(date, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
                     return (
                       <button
                         key={i}
+                        type="button"
                         onClick={() => { setSelectedDate(date); setSelectedSlot(''); }}
-                        className={`shrink-0 px-3 py-2 rounded-xl text-xs font-medium border transition-colors ${
-                          isSelected ? 'bg-primary text-primary-foreground border-primary' : 'bg-muted text-muted-foreground border-border hover:border-primary/50'
+                        className={`shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold border transition-all duration-200 ${
+                          isSelected ? 'text-primary-foreground border-transparent shadow-sm scale-105' : 'bg-muted text-muted-foreground border-border hover:border-primary/50'
                         }`}
+                        style={isSelected ? { background: 'linear-gradient(135deg, hsl(38 100% 50%), hsl(24 95% 45%))' } : {}}
                       >
                         {i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : format(date, 'EEE, MMM d')}
                       </button>
@@ -357,18 +345,20 @@ export default function Checkout() {
               {/* Slot selector */}
               {selectedDate && timeSlots.length > 0 && (
                 <div>
-                  <Label className="text-xs text-muted-foreground mb-1.5 block flex items-center gap-1">
-                    <Clock size={12} />
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 flex items-center gap-1">
+                    <Clock size={11} />
                     Select Time
                   </Label>
                   <div className="grid grid-cols-3 gap-2">
                     {timeSlots.map(slot => (
                       <button
                         key={slot}
+                        type="button"
                         onClick={() => setSelectedSlot(slot)}
-                        className={`py-2 rounded-lg text-xs font-medium border transition-colors ${
-                          selectedSlot === slot ? 'bg-primary text-primary-foreground border-primary' : 'bg-muted text-muted-foreground border-border hover:border-primary/50'
+                        className={`py-2.5 rounded-xl text-xs font-bold border transition-all duration-200 ${
+                          selectedSlot === slot ? 'text-primary-foreground border-transparent shadow-sm' : 'bg-muted text-muted-foreground border-border hover:border-primary/50'
                         }`}
+                        style={selectedSlot === slot ? { background: 'linear-gradient(135deg, hsl(38 100% 50%), hsl(24 95% 45%))' } : {}}
                       >
                         {slot}
                       </button>
@@ -381,28 +371,30 @@ export default function Checkout() {
         </section>
 
         {/* Special instructions */}
-        <section className="bg-card rounded-xl border border-border p-4 space-y-2">
-          <h2 className="font-semibold text-sm text-foreground">Special Instructions</h2>
+        <section className="premium-card p-4 space-y-2">
+          <h2 className="font-black text-sm text-foreground" style={{ fontFamily: 'Outfit, sans-serif' }}>Special Instructions</h2>
           <textarea
             placeholder="Any special requests? (optional)"
             value={note}
             onChange={e => setNote(e.target.value)}
             rows={2}
-            className="w-full px-3 py-2 text-sm bg-muted rounded-lg border border-border resize-none focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-full px-3 py-2.5 text-sm bg-muted rounded-xl border border-border/60 resize-none focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
           />
         </section>
 
         {/* Tip */}
-        <section className="bg-card rounded-xl border border-border p-4 space-y-3">
-          <h2 className="font-semibold text-sm text-foreground">Add a Tip</h2>
+        <section className="premium-card p-4 space-y-3">
+          <h2 className="font-black text-sm text-foreground" style={{ fontFamily: 'Outfit, sans-serif' }}>Add a Tip 🙏</h2>
           <div className="flex gap-2 flex-wrap">
             {TIP_OPTIONS.map(p => (
               <button
                 key={p}
+                type="button"
                 onClick={() => { setTipPct(p); setCustomTip(''); }}
-                className={`px-3 py-2 rounded-lg text-xs font-semibold border transition-colors ${
-                  tipPct === p && !customTip ? 'bg-primary text-primary-foreground border-primary' : 'bg-muted text-muted-foreground border-border'
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all duration-200 ${
+                  tipPct === p && !customTip ? 'text-primary-foreground border-transparent shadow-sm' : 'bg-muted text-muted-foreground border-border hover:border-primary/50'
                 }`}
+                style={tipPct === p && !customTip ? { background: 'linear-gradient(135deg, hsl(38 100% 50%), hsl(24 95% 45%))' } : {}}
               >
                 {p === 0 ? 'No tip' : `${p}%`}
               </button>
@@ -411,33 +403,33 @@ export default function Checkout() {
               placeholder="Custom $"
               value={customTip}
               onChange={e => { setCustomTip(e.target.value); setTipPct(-1); }}
-              className="w-24 h-9 text-sm px-2"
+              className="w-24 h-9 text-sm px-2 rounded-xl"
               type="number"
               min="0"
             />
           </div>
-          <p className="text-xs text-muted-foreground">
-            Tip: {formatCurrency(isNaN(tipAmount) ? 0 : tipAmount)}
+          <p className="text-xs text-muted-foreground font-medium">
+            Tip amount: <span className="text-foreground font-bold">{formatCurrency(isNaN(tipAmount) ? 0 : tipAmount)}</span>
           </p>
         </section>
 
         {/* Promo code */}
-        <section className="bg-card rounded-xl border border-border p-4 space-y-3">
-          <h2 className="font-semibold text-sm text-foreground flex items-center gap-2">
-            <Tag size={14} />
+        <section className="premium-card p-4 space-y-3">
+          <h2 className="font-black text-sm text-foreground flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <Tag size={14} className="text-primary" />
             Promo Code
           </h2>
           {appliedPromo ? (
-            <div className="flex items-center justify-between bg-success/10 border border-success/30 rounded-lg px-3 py-2.5">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={15} className="text-success shrink-0" />
+            <div className="flex items-center justify-between bg-success/10 border border-success/30 rounded-xl px-4 py-3">
+              <div className="flex items-center gap-2.5">
+                <CheckCircle2 size={16} className="text-success shrink-0" />
                 <div>
-                  <p className="text-sm font-bold text-foreground font-mono">{appliedPromo.promo.code}</p>
-                  <p className="text-xs text-success">{appliedPromo.message}</p>
+                  <p className="text-sm font-black text-foreground font-mono">{appliedPromo.promo.code}</p>
+                  <p className="text-xs text-success font-medium">{appliedPromo.message}</p>
                 </div>
               </div>
-              <button onClick={handleRemovePromo} className="p-1 text-muted-foreground hover:text-destructive transition-colors" aria-label="Remove promo code">
-                <X size={16} />
+              <button type="button" onClick={handleRemovePromo} className="p-1.5 text-muted-foreground hover:text-destructive transition-colors" aria-label="Remove promo code">
+                <X size={15} />
               </button>
             </div>
           ) : (
@@ -447,13 +439,14 @@ export default function Checkout() {
                 value={promoInput}
                 onChange={e => setPromoInput(e.target.value.toUpperCase())}
                 onKeyDown={e => e.key === 'Enter' && handleApplyPromo()}
-                className="flex-1 h-10 px-3 text-sm font-mono"
+                className="flex-1 h-11 px-3 text-sm font-mono rounded-xl tracking-widest"
               />
               <Button
+                type="button"
                 onClick={handleApplyPromo}
                 disabled={promoLoading || !promoInput.trim()}
                 variant="outline"
-                className="h-10 px-4 shrink-0"
+                className="h-11 px-5 shrink-0 rounded-xl font-bold"
               >
                 {promoLoading ? <Loader2 size={14} className="animate-spin" /> : 'Apply'}
               </Button>
@@ -462,79 +455,81 @@ export default function Checkout() {
         </section>
 
         {/* Order summary */}
-        <section className="bg-card rounded-xl border border-border p-4 space-y-2">
-          <h2 className="font-semibold text-sm text-foreground mb-1">Order Summary</h2>
+        <section className="premium-card p-5 space-y-2">
+          <h2 className="font-black text-sm text-foreground mb-3" style={{ fontFamily: 'Outfit, sans-serif' }}>Order Summary</h2>
           {items.map(item => (
             <div key={`${item.menu_item_id}-${item.modifications}`} className="flex justify-between text-sm">
-              <span className="text-muted-foreground">{item.qty}x {item.name}</span>
-              <span>{formatCurrency(item.price)}</span>
+              <span className="text-muted-foreground font-medium">{item.qty}× {item.name}</span>
+              <span className="font-semibold">{formatCurrency(item.price)}</span>
             </div>
           ))}
-          <div className="border-t border-border pt-2 space-y-1.5">
+          <div className="border-t border-border/60 pt-3 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Subtotal</span>
-              <span>{formatCurrency(subtotal)}</span>
+              <span className="text-muted-foreground font-medium">Subtotal</span>
+              <span className="font-semibold">{formatCurrency(subtotal)}</span>
             </div>
             {discount > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-success flex items-center gap-1"><Tag size={11} />Discount ({appliedPromo?.promo.code})</span>
-                <span className="text-success">−{formatCurrency(discount)}</span>
+                <span className="text-success flex items-center gap-1 font-medium"><Tag size={11} />Discount ({appliedPromo?.promo.code})</span>
+                <span className="text-success font-bold">−{formatCurrency(discount)}</span>
               </div>
             )}
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Tax</span>
-              <span>{formatCurrency(taxOnDiscounted)}</span>
+              <span className="text-muted-foreground font-medium">Tax</span>
+              <span className="font-semibold">{formatCurrency(taxOnDiscounted)}</span>
             </div>
             {deliveryFee > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Delivery Fee</span>
-                <span>{formatCurrency(deliveryFee)}</span>
+                <span className="text-muted-foreground font-medium">Delivery Fee</span>
+                <span className="font-semibold">{formatCurrency(deliveryFee)}</span>
               </div>
             )}
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Tip</span>
-              <span>{formatCurrency(isNaN(tipAmount) ? 0 : tipAmount)}</span>
+              <span className="text-muted-foreground font-medium">Tip</span>
+              <span className="font-semibold">{formatCurrency(isNaN(tipAmount) ? 0 : tipAmount)}</span>
             </div>
-            <div className="flex justify-between font-bold text-base pt-1">
+            <div className="flex justify-between font-black text-base pt-1">
               <span>Total</span>
-              <span className="text-primary">{formatCurrency(total)}</span>
+              <span style={{ background: 'linear-gradient(90deg, hsl(38 100% 50%), hsl(24 95% 45%))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                {formatCurrency(total)}
+              </span>
             </div>
           </div>
         </section>
       </div>
 
-      {/* Bottom action buttons */}
-      <div className="fixed bottom-16 left-0 right-0 px-4 pb-4 pt-3 bg-background/95 backdrop-blur-sm border-t border-border max-w-lg mx-auto space-y-2">
+      {/* Floating payment bar */}
+      <div className="fixed bottom-16 left-0 right-0 z-50 px-4 pb-3 pt-3 bg-card/85 backdrop-blur-xl border-t border-border/50 max-w-lg mx-auto space-y-2">
         {/* Paystack – Mobile Money / Card */}
         <Button
+          type="button"
           onClick={handlePayWithPaystack}
           disabled={paystackLoading || loading}
-          className="w-full h-12 text-sm font-bold bg-primary text-primary-foreground hover:bg-primary/90"
+          className="w-full font-extrabold rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+          style={{
+            height: '3.25rem',
+            background: 'linear-gradient(135deg, hsl(38 100% 50%), hsl(24 95% 45%))',
+            color: 'hsl(30 100% 8%)',
+            boxShadow: '0 4px 20px 0 rgba(245,158,11,0.4)',
+          }}
         >
           {paystackLoading
             ? <Loader2 size={18} className="animate-spin" />
-            : (
-              <span className="flex items-center gap-2">
-                <Smartphone size={16} />
-                Pay with Mobile Money / Card · {formatCurrency(total)}
-              </span>
-            )}
+            : <span className="flex items-center gap-2 text-sm"><Smartphone size={16} />Pay with Mobile Money · {formatCurrency(total)}</span>
+          }
         </Button>
         {/* Cash fallback */}
         <Button
+          type="button"
           variant="outline"
           onClick={handlePlaceOrder}
           disabled={loading || paystackLoading}
-          className="w-full h-10 text-sm font-semibold"
+          className="w-full h-11 text-sm font-bold rounded-xl border-border/70 hover:border-primary/50"
         >
           {loading
             ? <Loader2 size={16} className="animate-spin" />
-            : (
-              <span className="flex items-center gap-2">
-                <Banknote size={15} />
-                Pay at {orderType === 'delivery' ? 'Delivery' : 'Pickup'}
-              </span>
-            )}
+            : <span className="flex items-center gap-2"><Banknote size={15} />Pay at {orderType === 'delivery' ? 'Delivery' : 'Pickup'}</span>
+          }
         </Button>
       </div>
     </CustomerLayout>

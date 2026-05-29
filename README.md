@@ -1,5 +1,5 @@
-Chef's Kitchen 🍔
-A full-stack Progressive Web App for Chef's Kitchen — a fast-food restaurant in Navrongo, Ghana. Customers can browse the menu, place orders, pay with Mobile Money or card via Paystack, and track their order in real-time. Kitchen staff manage orders through a live Kanban display; managers handle menus, staff, and settings.
+kitchen restaurant 🍔
+A full-stack Progressive Web App for our Kitchen — a fast-food restaurant in Navrongo, Ghana. Customers can browse the menu, place orders, pay with Mobile Money or card via Paystack, and track their order in real-time. Kitchen staff manage orders through a live Kanban display; managers handle menus, staff, and settings.
 
 Features
 Area	Highlights

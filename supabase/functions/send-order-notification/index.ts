@@ -42,11 +42,11 @@ const STATUS_MESSAGES: Record<string, { title: string; body: string }> = {
   },
   completed: {
     title: "🎉 Order Completed",
-    body: "Thank you for ordering from Chef's Kitchen!",
+    body: "Thank you for ordering with us!",
   },
 };
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -95,7 +95,7 @@ Deno.serve(async (req) => {
 
     // Send to all tokens for the user
     const results = await Promise.allSettled(
-      tokens.map((t) =>
+      tokens.map((t: { token: string }) =>
         fetch("https://fcm.googleapis.com/fcm/send", {
           method: "POST",
           headers: {
@@ -119,7 +119,7 @@ Deno.serve(async (req) => {
       )
     );
 
-    const sent = results.filter((r) => r.status === "fulfilled").length;
+    const sent = results.filter((r: PromiseSettledResult<Response>) => r.status === "fulfilled").length;
     return ok({ sent, total: tokens.length });
   } catch (err) {
     console.error("send-order-notification error:", err);

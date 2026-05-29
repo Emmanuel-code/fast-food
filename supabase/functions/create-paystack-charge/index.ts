@@ -46,7 +46,7 @@ interface ChargeRequest {
   customer_email: string;
 }
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -108,7 +108,7 @@ Deno.serve(async (req) => {
 
     if (orderError || !dbOrder) {
       console.error("Order insert error:", orderError);
-      return fail("Failed to create order", 500);
+      return fail(`Failed to create order: ${JSON.stringify(orderError)}`, 500);
     }
 
     // Initialize Paystack transaction

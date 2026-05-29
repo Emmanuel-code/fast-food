@@ -6,10 +6,12 @@ import { CartProvider } from '@/contexts/CartContext';
 import { OfflineBanner } from '@/components/common/OfflineBanner';
 import { PWAInstallButton } from '@/components/common/PWAInstallButton';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { ThemeInjector } from '@/components/common/ThemeInjector';
 import type { UserRole } from '@/types/types';
 
 // Pages
 import Login from '@/pages/Login';
+import Landing from '@/pages/customer/Landing';
 import Home from '@/pages/customer/Home';
 import MenuItemDetail from '@/pages/customer/MenuItemDetail';
 import Cart from '@/pages/customer/Cart';
@@ -28,33 +30,58 @@ import StaffManager from '@/pages/manager/StaffManager';
 import Settings from '@/pages/manager/Settings';
 import PromoCodesManager from '@/pages/manager/PromoCodesManager';
 
+const Spinner = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+  </div>
+);
+
 function RoleRoute({ children, roles }: { children: React.ReactNode; roles: UserRole[] }) {
   const { user, profile, loading } = useAuth();
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+
+  // Still resolving session — show spinner
+  if (loading) return <Spinner />;
+
+  // No session → redirect to login
   if (!user) return <Navigate to="/login" replace />;
-  if (profile && !roles.includes(profile.role)) {
+
+  // Session exists but profile couldn't be loaded — graceful fallback to menu
+  // (ensureProfile in AuthContext already tried to create/fetch it)
+  if (!profile) return <Navigate to="/menu" replace />;
+
+  // Wrong role → redirect to correct area
+  if (!roles.includes(profile.role)) {
     if (profile.role === 'worker') return <Navigate to="/kitchen" replace />;
     if (profile.role === 'manager' || profile.role === 'admin') return <Navigate to="/dashboard" replace />;
     return <Navigate to="/menu" replace />;
   }
+
   return <>{children}</>;
 }
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
   const { user, profile, loading } = useAuth();
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+
+  // Still resolving session
+  if (loading) return <Spinner />;
+
+  // Logged in with profile → redirect away from login to the right area
   if (user && profile) {
     if (profile.role === 'worker') return <Navigate to="/kitchen" replace />;
     if (profile.role === 'manager' || profile.role === 'admin') return <Navigate to="/dashboard" replace />;
     return <Navigate to="/menu" replace />;
   }
+
+  // User exists but no profile → just let them through (don't block with spinner)
+  // They'll be treated as logged-in on public pages
+
   return <>{children}</>;
 }
 
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/menu" replace />} />
+      <Route path="/" element={<Landing />} />
 
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
 
@@ -89,6 +116,7 @@ function AppRoutes() {
 export default function App() {
   return (
     <Router>
+      <ThemeInjector />
       <AuthProvider>
         <RestaurantProvider>
           <CartProvider>

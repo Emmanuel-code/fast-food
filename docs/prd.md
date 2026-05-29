@@ -1,7 +1,7 @@
 Requirements Document
 1. Application Overview
 1.1 Application Name
-Chef's Kitchen
+ Kitchen
 
 1.2 Application Description
 A Progressive Web App for a fast-food restaurant based in Navrongo, Ghana that enables customers to browse menu, place orders (pickup/delivery/curbside), track order status in real-time, and pre-order for future dates. The system includes Paystack payment integration for Mobile Money and card payments, push notifications via Firebase Cloud Messaging, staff interfaces for kitchen operations, menu management, order management, and restaurant settings configuration.

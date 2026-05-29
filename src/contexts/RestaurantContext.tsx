@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { supabase } from '@/db/supabase';
 import type { RestaurantSettings } from '@/types/types';
 import { isRestaurantOpen } from '@/utils/timeSlots';
+import { tenantConfig } from '@/config/tenantConfig';
 
 interface RestaurantContextType {
   settings: RestaurantSettings | null;
@@ -23,7 +24,7 @@ const DEFAULT_SETTINGS: RestaurantSettings = {
     saturday: { open: '09:00', close: '23:00', enabled: true },
     sunday: { open: '10:00', close: '21:00', enabled: true },
   },
-  timezone: 'America/New_York',
+  timezone: 'Africa/Accra',
   closed_temporarily: false,
   custom_closed_message: 'We will be back soon! Thank you for your patience.',
   max_pre_order_days: 2,
@@ -34,9 +35,9 @@ const DEFAULT_SETTINGS: RestaurantSettings = {
   prep_time_estimate_minutes: 15,
   order_alert_threshold_minutes: 8,
   tax_rate: 0.08,
-  restaurant_address: '123 Main Street, New York, NY 10001',
-  restaurant_lat: 40.7128,
-  restaurant_lng: -74.006,
+  restaurant_address: tenantConfig.location.defaultAddress,
+  restaurant_lat: tenantConfig.location.defaultLat,
+  restaurant_lng: tenantConfig.location.defaultLng,
 };
 
 export function RestaurantProvider({ children }: { children: ReactNode }) {

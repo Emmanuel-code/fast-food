@@ -6,10 +6,8 @@ import { useRestaurant } from '@/contexts/RestaurantContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import {
-  ChefHat, LogOut, CheckCircle,
-  Play, Package, Bell, MessageSquare, AlertTriangle
-} from 'lucide-react';
+import { Utensils, Clock, CheckCircle2, AlertCircle, RefreshCw, ChefHat, LogOut, Bell, MessageSquare, AlertTriangle, Play, Package } from 'lucide-react';
+import { tenantConfig } from '@/config/tenantConfig';
 import { elapsedMinutes, elapsedTime } from '@/utils/timeSlots';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -281,7 +279,7 @@ export default function KitchenDisplay() {
           </div>
           <div>
             <h1 className="font-bold text-sidebar-foreground text-sm">Kitchen Display</h1>
-            <p className="text-xs text-sidebar-foreground/60">Chef's Kitchen</p>
+            <p className="text-xs text-sidebar-foreground/60">{tenantConfig.appName}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
