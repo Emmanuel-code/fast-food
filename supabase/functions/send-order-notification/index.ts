@@ -27,7 +27,7 @@ function fail(msg: string, code = 400): Response {
   );
 }
 
-const STATUS_MESSAGES: Record<string, { title: string; body: string }> = {
+const CUSTOMER_MESSAGES: Record<string, { title: string; body: string }> = {
   accepted: {
     title: "🍳 Order Accepted!",
     body: "Your order has been accepted and is being prepared.",
@@ -46,17 +46,51 @@ const STATUS_MESSAGES: Record<string, { title: string; body: string }> = {
   },
 };
 
+const STAFF_MESSAGES: Record<string, { title: string; body: string }> = {
+  new: {
+    title: "🔔 New Order Received!",
+    body: "A new order has been placed and is waiting to be accepted.",
+  },
+  cancelled: {
+    title: "❌ Order Cancelled",
+    body: "A customer has cancelled their order.",
+  },
+};
+
+async function triggerNovu(
+  novuApiKey: string,
+  workflowId: string,
+  subscriberId: string,
+  payload: Record<string, unknown>
+): Promise<void> {
+  const res = await fetch("https://api.novu.co/v1/events/trigger", {
+    method: "POST",
+    headers: {
+      Authorization: `ApiKey ${novuApiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: workflowId,
+      to: { subscriberId },
+      payload,
+    }),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    console.error(`Novu trigger failed for subscriber ${subscriberId}:`, text);
+  }
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const fcmKey = Deno.env.get("FCM_SERVER_KEY");
-    if (!fcmKey) {
-      // Silently succeed if FCM is not configured — don't block order workflow
-      console.warn("FCM_SERVER_KEY not configured — skipping notification");
-      return ok({ sent: false, reason: "FCM not configured" });
+    const novuApiKey = Deno.env.get("NOVU_SECRET_KEY");
+    if (!novuApiKey) {
+      console.warn("NOVU_SECRET_KEY not configured — skipping notification");
+      return ok({ sent: false, reason: "Novu not configured" });
     }
 
     const { order_id, new_status } = await req.json();
@@ -64,12 +98,6 @@ Deno.serve(async (req: Request) => {
       return fail("Missing order_id or new_status");
     }
 
-    const message = STATUS_MESSAGES[new_status];
-    if (!message) {
-      return ok({ sent: false, reason: "No notification defined for this status" });
-    }
-
-    // Get the order's user_id and order_number
     const { data: order, error: orderErr } = await supabase
       .from("orders")
       .select("user_id, order_number")
@@ -81,49 +109,47 @@ Deno.serve(async (req: Request) => {
       return fail("Order not found or has no user", 404);
     }
 
-    // Get the customer's FCM token(s)
-    const { data: tokens, error: tokenErr } = await supabase
-      .from("fcm_tokens")
-      .select("token")
-      .eq("user_id", order.user_id)
-      .order("created_at", { ascending: false })
-      .limit(5);
+    const triggers: Promise<void>[] = [];
 
-    if (tokenErr || !tokens?.length) {
-      return ok({ sent: false, reason: "No FCM token for this user" });
+    const customerMsg = CUSTOMER_MESSAGES[new_status];
+    if (customerMsg) {
+      triggers.push(
+        triggerNovu(novuApiKey, "order-status-update", order.user_id, {
+          title: customerMsg.title,
+          body: `${customerMsg.body} (Order #${order.order_number})`,
+          order_id,
+          order_number: order.order_number,
+          status: new_status,
+        })
+      );
     }
 
-    // Send to all tokens for the user
-    const results = await Promise.allSettled(
-      tokens.map((t: { token: string }) =>
-        fetch("https://fcm.googleapis.com/fcm/send", {
-          method: "POST",
-          headers: {
-            Authorization: `key=${fcmKey}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            to: t.token,
-            notification: {
-              title: message.title,
-              body: `${message.body} (Order #${order.order_number})`,
-              icon: "/icons/icon-192x192.png",
-            },
-            data: {
-              order_id,
-              status: new_status,
-              order_number: order.order_number,
-            },
-          }),
-        })
-      )
-    );
+    const staffMsg = STAFF_MESSAGES[new_status];
+    if (staffMsg) {
+      const { data: staffProfiles } = await supabase
+        .from("profiles")
+        .select("id")
+        .in("role", ["manager", "admin", "staff", "chef"]);
 
-    const sent = results.filter((r: PromiseSettledResult<Response>) => r.status === "fulfilled").length;
-    return ok({ sent, total: tokens.length });
+      if (staffProfiles?.length) {
+        for (const staffMember of staffProfiles) {
+          triggers.push(
+            triggerNovu(novuApiKey, "order-status-update", staffMember.id, {
+              title: staffMsg.title,
+              body: `${staffMsg.body} (Order #${order.order_number})`,
+              order_id,
+              order_number: order.order_number,
+              status: new_status,
+            })
+          );
+        }
+      }
+    }
+
+    await Promise.allSettled(triggers);
+    return ok({ sent: true, status: new_status, order_number: order.order_number });
   } catch (err) {
     console.error("send-order-notification error:", err);
-    // Don't block order workflow on notification failure
     return ok({ sent: false, reason: String(err) });
   }
 });

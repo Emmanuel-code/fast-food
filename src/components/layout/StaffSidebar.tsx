@@ -24,6 +24,7 @@ const managerNav = [
 ];
 
 import { tenantConfig } from '@/config/tenantConfig';
+import { NotificationInbox } from '@/components/NotificationInbox';
 
 function SidebarContent({ onClose }: { isAdmin?: boolean; onClose?: () => void }) {
   const { profile, signOut } = useAuth();
@@ -42,13 +43,16 @@ function SidebarContent({ onClose }: { isAdmin?: boolean; onClose?: () => void }
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shrink-0">
             <ChefHat size={20} className="text-primary-foreground" />
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <p className="font-bold text-sidebar-foreground text-sm truncate">{tenantConfig.appName}</p>
             <div className="flex items-center gap-2 mt-0.5">
               <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-primary/20 text-primary border-0 capitalize">
                 {profile?.role}
               </Badge>
             </div>
+          </div>
+          <div className="flex-shrink-0">
+            <NotificationInbox />
           </div>
         </div>
         <p className="text-xs text-sidebar-foreground/60 mt-2 truncate">{profile?.name || profile?.email}</p>

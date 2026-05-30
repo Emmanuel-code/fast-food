@@ -68,10 +68,13 @@ export interface CartItem {
 }
 
 export interface DeliveryAddress {
-  line1: string;
-  city: string;
-  state: string;
-  zip: string;
+  lat?: number;
+  lng?: number;
+  details?: string;
+  line1?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
 }
 
 export interface OrderItem {

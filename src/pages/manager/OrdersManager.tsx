@@ -7,7 +7,7 @@ import { StaffLayout } from '@/components/layout/StaffLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Search, ChevronDown, Eye, X, CheckCircle } from 'lucide-react';
+import { Search, ChevronDown, Eye, X, CheckCircle, MapPin, ExternalLink } from 'lucide-react';
 import { formatCurrency, formatDateTime } from '@/utils/timeSlots';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -234,6 +234,39 @@ export default function OrdersManager() {
                 {selectedOrder.delivery_fee > 0 && <div className="flex justify-between text-sm"><span className="text-muted-foreground">Delivery</span><span>{formatCurrency(selectedOrder.delivery_fee)}</span></div>}
                 <div className="flex justify-between font-bold"><span>Total</span><span className="text-primary">{formatCurrency(selectedOrder.total)}</span></div>
               </div>
+
+              {selectedOrder.type === 'delivery' && selectedOrder.delivery_address && (
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-sm">
+                  <p className="text-xs text-primary font-semibold mb-1 flex items-center gap-1">
+                    <MapPin size={12} /> Delivery Location
+                  </p>
+                  {selectedOrder.delivery_address.lat ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <a 
+                          href={`https://maps.google.com/?q=${selectedOrder.delivery_address.lat},${selectedOrder.delivery_address.lng}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 text-sm text-primary hover:underline font-medium"
+                        >
+                          View on Map <ExternalLink size={12} />
+                        </a>
+                      </div>
+                      {selectedOrder.delivery_address.details && (
+                        <div>
+                          <p className="text-xs text-muted-foreground">Special Directions:</p>
+                          <p className="font-medium">{selectedOrder.delivery_address.details}</p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div>
+                      <p>{selectedOrder.delivery_address.line1}</p>
+                      <p>{selectedOrder.delivery_address.city}, {selectedOrder.delivery_address.state} {selectedOrder.delivery_address.zip}</p>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {selectedOrder.customer_note && (
                 <div className="bg-muted rounded-lg p-3 text-sm">

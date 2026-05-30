@@ -13,7 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   CalendarClock, ChefHat, ArrowLeft, Plus, Minus, ShoppingCart,
-  MapPin, Car, UtensilsCrossed, Loader2, Calendar, Clock
+  MapPin, Car, UtensilsCrossed, Loader2, Calendar, Clock, CheckCircle2
 } from 'lucide-react';
 import { formatCurrency, getAvailableDates, generateTimeSlots } from '@/utils/timeSlots';
 import { format, addDays } from 'date-fns';
@@ -33,7 +33,8 @@ export default function PreOrder() {
   const [menuLoading, setMenuLoading] = useState(false);
   const [activeCategory, setActiveCategory] = useState('All');
   const [orderType, setOrderType] = useState<OrderType>('pickup');
-  const [deliveryAddr, setDeliveryAddr] = useState({ line1: '', city: '', state: '', zip: '' });
+  const [deliveryAddr, setDeliveryAddr] = useState<{ lat?: number; lng?: number; details?: string }>({});
+  const [locationLoading, setLocationLoading] = useState(false);
   const [note, setNote] = useState('');
   const [tipPct, setTipPct] = useState(15);
   const [placing, setPlacing] = useState(false);
@@ -74,8 +75,8 @@ export default function PreOrder() {
 
   const handlePlaceOrder = async () => {
     if (!user) { navigate('/login'); return; }
-    if (orderType === 'delivery' && (!deliveryAddr.line1 || !deliveryAddr.city)) {
-      toast.error('Please enter your delivery address');
+    if (orderType === 'delivery' && (!deliveryAddr.lat || !deliveryAddr.lng)) {
+      toast.error('Please capture your delivery location');
       return;
     }
     if (!selectedDate || !selectedSlot) { toast.error('Please select date and time'); return; }
@@ -337,13 +338,58 @@ export default function PreOrder() {
             </div>
 
             {orderType === 'delivery' && (
-              <div className="bg-card rounded-xl border border-border p-4 space-y-2">
-                <h2 className="font-semibold text-sm">Delivery Address</h2>
-                <Input placeholder="Street address" value={deliveryAddr.line1} onChange={e => setDeliveryAddr(p => ({ ...p, line1: e.target.value }))} className="h-10 px-3 text-sm" />
-                <div className="grid grid-cols-2 gap-2">
-                  <Input placeholder="City" value={deliveryAddr.city} onChange={e => setDeliveryAddr(p => ({ ...p, city: e.target.value }))} className="h-10 px-3 text-sm" />
-                  <Input placeholder="State" value={deliveryAddr.state} onChange={e => setDeliveryAddr(p => ({ ...p, state: e.target.value }))} className="h-10 px-3 text-sm" />
-                </div>
+              <div className="bg-card rounded-xl border border-border p-4 space-y-3">
+                <h2 className="font-semibold text-sm flex items-center gap-2">
+                  <MapPin size={14} className="text-primary" />
+                  Delivery Location
+                </h2>
+                {(!deliveryAddr.lat || !deliveryAddr.lng) ? (
+                  <Button 
+                    type="button" 
+                    variant="outline"
+                    className="w-full h-11 rounded-xl font-semibold border-primary/50 text-primary hover:bg-primary/5"
+                    onClick={() => {
+                      setLocationLoading(true);
+                      navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                          setDeliveryAddr({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+                          setLocationLoading(false);
+                          toast.success('Location captured successfully!');
+                        },
+                        (err) => {
+                          setLocationLoading(false);
+                          toast.error('Failed to get location. Please enable location services.');
+                        },
+                        { enableHighAccuracy: true }
+                      );
+                    }}
+                    disabled={locationLoading}
+                  >
+                    {locationLoading ? <Loader2 size={16} className="animate-spin mr-2" /> : <MapPin size={16} className="mr-2" />}
+                    Use Current Location
+                  </Button>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 p-3 bg-success/10 border border-success/20 rounded-xl">
+                      <CheckCircle2 size={18} className="text-success shrink-0" />
+                      <p className="text-xs font-medium text-success-foreground">Location successfully captured!</p>
+                    </div>
+                    <Input 
+                      placeholder="Special directions (e.g. Blue gate, call upon arrival)" 
+                      value={deliveryAddr.details || ''} 
+                      onChange={e => setDeliveryAddr(p => ({ ...p, details: e.target.value }))} 
+                      className="h-10 px-3 text-sm rounded-xl" 
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="w-full h-8 text-xs text-muted-foreground hover:text-foreground"
+                      onClick={() => setDeliveryAddr({})}
+                    >
+                      Change Location
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
 
