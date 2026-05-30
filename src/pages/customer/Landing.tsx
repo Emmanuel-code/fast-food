@@ -40,24 +40,24 @@ export default function Landing() {
 
   const featuredItems = [
     {
-      name: "Double Smash Burger",
-      description: "Two smashed beef patties, best ghanaian cheese, caramelized onions, pickles & house burger sauce on a seeded brioche bun.",
-      price: 13.99,
-      image: "https://miaoda-site-img.s3cdn.medo.dev/images/KLing_018e378f-6b93-4338-b3c9-576f4b233dce.jpg",
+      name: "Special Jollof Rice",
+      description: "Jollof rice cooked with fresh natural ingredients and spices. Served with grilled chicken, fried plantain and salad.",
+      price: 25.99,
+      image: "https://i.pinimg.com/736x/35/80/d4/3580d49461d07077313489b2323ec957.jpg",
       dietary: ["Hot Seller"],
     },
     {
-      name: "Loaded Cheese Fries",
-      description: "Our signature golden fries smothered in hot cheddar cheese sauce, sliced jalapeños, and sour cream swirl.",
+      name: "Elous Pizza",
+      description: "Our signature golden pizza made with fresh ingredients and spices.",
       price: 6.99,
-      image: "https://miaoda-site-img.s3cdn.medo.dev/images/KLing_202dc150-154d-42fe-8487-d65cfd46e380.jpg",
+      image: "https://i.pinimg.com/736x/d9/cb/5f/d9cb5fb5c6d0d7d3dc6f9a2926f47100.jpg",
       dietary: ["Vegetarian"],
     },
     {
-      name: "Classic Combo Meal",
-      description: "The ultimate hunger killer. Classic Cheeseburger, seasoned golden fries, and a chilled fountain drink of your choice.",
+      name: "special Banku",
+      description: "homemade banku made with any soup of your choice, grilled tilapia or chicken,  fresh pepper and onions and side salad",
       price: 14.99,
-      image: "https://miaoda-site-img.s3cdn.medo.dev/images/KLing_5f59d724-61ce-4eb3-b0eb-a06f505b8d21.jpg",
+      image: "https://i.pinimg.com/1200x/d4/b7/f4/d4b7f484155fbdfabafb096ffe03ea96.jpg",
       dietary: ["Combo Value"],
     }
   ];
@@ -155,8 +155,7 @@ export default function Landing() {
               </h1>
 
               <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal text-pretty">
-                Fast-food, re-engineered for the modern epicurean. Golden crispy smash burgers, double cheese loaded sides, and premium real-strawberry milkshakes, ready to track live from kitchen to your hands.
-              </p>
+                Fast-food, re-engineered for the modern foodie             </p>
 
               {/* Statistics Grid */}
               <div className="grid grid-cols-3 gap-4 py-4 max-w-md mx-auto lg:mx-0 border-y border-border/60">
@@ -203,7 +202,7 @@ export default function Landing() {
                 <div className="w-full h-full rounded-[2rem] overflow-hidden relative group">
                   <img
                     src={tenantConfig.images.hero}
-                    alt="Delicious Burger"
+                    alt="Special Fufu and Soup"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   {/* Floating badge inside image */}

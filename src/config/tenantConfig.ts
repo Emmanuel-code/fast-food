@@ -1,7 +1,7 @@
 export const tenantConfig = {
   // Brand Details
-  appName: "Chef's Kitchen",
-  appNameShort: "ChefKitchen", // For PWA name
+  appName: "Elou's Kitchen",
+  appNameShort: "Elou's Kitchen", // For PWA name
   description: "Order fresh, fast and delicious food from our kitchen directly to you.",
   contactInfo: {
     developer: "Jimah",
@@ -39,15 +39,15 @@ export const tenantConfig = {
   // Imagery & Visuals
   images: {
     // Used in the landing page hero section
-    hero: "https://miaoda-site-img.s3cdn.medo.dev/images/KLing_2e47c1f8-d4fa-471d-85f8-80df2a514217.jpg",
+    hero: "https://i.pinimg.com/1200x/64/0f/a5/640fa50ae043144aecaa950cde4f5ade.jpg",
     // Used as the placeholder for menu items
-    featuredBurger: "https://miaoda-site-img.s3cdn.medo.dev/images/KLing_018e378f-6b93-4338-b3c9-576f4b233dce.jpg",
+    featuredBurger: "https://i.pinimg.com/1200x/64/0f/a5/640fa50ae043144aecaa950cde4f5ade.jpg",
   },
   
   // Marketing Copy
   marketing: {
-    landingHeroTitle: "Elevated Fast Food",
-    landingHeroSubtitle: "Engineering the finest fast food experience with high culinary standards and real-time live ordering technology.",
+    landingHeroTitle: "Elou's Kitchen",
+    landingHeroSubtitle: "Finest food experience with high culinary standards and real-time live ordering technology.",
     landingMenuIntro: "Handcrafted, fresh, and bursting with rich local flavor.",
     landingPWAIntro: "With off-line cache support, browse our menu and access your orders instantly like a native app without wasting app store space.",
     // Section headings on the Landing page
@@ -57,9 +57,9 @@ export const tenantConfig = {
 
   // Email (used by the send-order-confirmation-email edge function via env vars)
   email: {
-    fromName: "Chef's Kitchen",
+    fromName: "Elou kitchen",
     fromAddress: "orders@chefskitchen.gh",
-    footerTagline: "Thank you for ordering from Chef's Kitchen! 🍽️",
+    footerTagline: "Thank you for ordering from our Kitchen! 🍽️",
   },
 
   // Location & Map
@@ -71,9 +71,9 @@ export const tenantConfig = {
     defaultAddress: "Catholic Road, Navrongo, Upper East Region, Ghana",
     city: "Navrongo",
     // Short landmark hint shown under the address card
-    locationHint: "Near AMA Container · Catholic Road, Navrongo",
+    locationHint: "UTAS Road, Navrongo",
     // Longer visit tip sentence shown in the Visit Tips card
-    visitTip: "We are located near the AMA Container along Catholic Road in Navrongo — look for our signage.",
+    visitTip: "We are located near the UTAS  along Catholic Road in Navrongo — look for our signage.",
     // Direct Google Maps pin URL (right-click a pin on maps.google.com → Share → Copy link)
     googleMapsUrl: "https://maps.app.goo.gl/ed2i7LSpR94p8ocL6",
   },
