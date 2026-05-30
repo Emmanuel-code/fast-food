@@ -6,7 +6,7 @@ import { useRestaurant } from '@/contexts/RestaurantContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Utensils, Clock, CheckCircle2, AlertCircle, RefreshCw, ChefHat, LogOut, Bell, MessageSquare, AlertTriangle, Play, Package } from 'lucide-react';
+import { CheckCircle2, ChefHat, LogOut, Bell, MessageSquare, AlertTriangle, Play, Package } from 'lucide-react';
 import { tenantConfig } from '@/config/tenantConfig';
 import { elapsedMinutes, elapsedTime } from '@/utils/timeSlots';
 import { toast } from 'sonner';
@@ -142,7 +142,7 @@ function OrderCard({
             onClick={() => onComplete(order.id)}
             className="flex-1 h-8 text-xs bg-muted text-muted-foreground hover:bg-muted/80 gap-1"
           >
-            <CheckCircle size={11} />
+            <CheckCircle2 size={11} />
             Complete
           </Button>
         )}

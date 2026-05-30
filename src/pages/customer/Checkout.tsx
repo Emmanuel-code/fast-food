@@ -173,6 +173,9 @@ export default function Checkout() {
         .maybeSingle();
 
       if (orderError) throw orderError;
+      supabase.functions.invoke('send-order-notification', {
+        body: { order_id: newOrder.id, new_status: 'new' },
+      }).catch(() => {});
       clearCart();
       toast.success('Order placed! Pay at pickup.');
       navigate(`/orders/${newOrder.id}`);
@@ -287,7 +290,7 @@ export default function Checkout() {
                       setLocationLoading(false);
                       toast.success('Location captured successfully!');
                     },
-                    (err) => {
+                    (_err) => {
                       setLocationLoading(false);
                       toast.error('Failed to get location. Please enable location services.');
                     },
