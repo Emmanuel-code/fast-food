@@ -210,7 +210,7 @@ export default function Landing() {
                     <div className="flex justify-between items-center">
                       <div>
                         <h4 className="font-extrabold text-sm sm:text-base leading-snug">Special Homemade fufu</h4>
-                        <p className="text-[10px] sm:text-xs text-white/80 mt-0.5">Glazed Bun • Crispy Patty</p>
+                        <p className="text-[10px] sm:text-xs text-white/80 mt-0.5">delicious ain all ways</p>
                       </div>
                       <span className="font-black text-primary text-base sm:text-lg bg-white px-3 py-1 rounded-full">{formatCurrency(13.99)}</span>
                     </div>
