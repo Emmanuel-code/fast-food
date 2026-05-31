@@ -155,7 +155,7 @@ export default function Landing() {
               </h1>
 
               <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal text-pretty">
-                Fast-food, re-engineered for the modern foodie             </p>
+                Fast-food, re-engineered for the modern foodie, satisfing your cravings in every way and giving you pleasure in our home made dishes.             </p>
 
               {/* Statistics Grid */}
               <div className="grid grid-cols-3 gap-4 py-4 max-w-md mx-auto lg:mx-0 border-y border-border/60">

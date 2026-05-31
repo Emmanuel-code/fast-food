@@ -1,30 +1,30 @@
 export const tenantConfig = {
   // Brand Details
-  appName: "Elou's Kitchen",
-  appNameShort: "Elou's Kitchen", // For PWA name
+  appName: "Elos Spot Kitchen",
+  appNameShort: "Elos Spot Kitchen", // For PWA name
   description: "Order fresh, fast and delicious food from our kitchen directly to you.",
   contactInfo: {
     developer: "Jimah",
     phone: "+233541555607",
   },
   copyrightYear: new Date().getFullYear(),
-  
+
   // Theme Colors (Tailwind HSL variables)
   // Format: "H S% L%" (e.g. "38 100% 50%")
   theme: {
     // Primary brand color
     primary: "38 100% 50%",           // Vibrant Premium Amber Gold
     primaryForeground: "30 100% 8%",  // Dark text on primary
-    
+
     // Background and cards
     background: "35 30% 98%",
     foreground: "28 40% 12%",
     card: "0 0% 100%",
     cardForeground: "28 40% 12%",
-    
+
     // Ring and accents
     ring: "38 100% 50%",
-    
+
     // Sidebar colors
     sidebarBackground: "28 55% 10%",
     sidebarForeground: "40 50% 94%",
@@ -43,10 +43,10 @@ export const tenantConfig = {
     // Used as the placeholder for menu items
     featuredBurger: "https://i.pinimg.com/1200x/64/0f/a5/640fa50ae043144aecaa950cde4f5ade.jpg",
   },
-  
+
   // Marketing Copy
   marketing: {
-    landingHeroTitle: "Elou's Kitchen",
+    landingHeroTitle: "Elos Spot Kitchen",
     landingHeroSubtitle: "Finest food experience with high culinary standards and real-time live ordering technology.",
     landingMenuIntro: "Handcrafted, fresh, and bursting with rich local flavor.",
     landingPWAIntro: "With off-line cache support, browse our menu and access your orders instantly like a native app without wasting app store space.",
