@@ -26,8 +26,7 @@ async function run() {
   const { data, error } = await supabase
     .from('restaurant_settings')
     .update({
-      restaurant_address: 'Ama Container, Catholic Road, Navrongo, Ghana',
-      restaurant_lat: 10.882261,
+      Your location      restaurant_lat: 10.882261,
       restaurant_lng: -1.083476,
       timezone: 'Africa/Accra'
     })

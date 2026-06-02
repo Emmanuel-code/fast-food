@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRestaurant } from '@/contexts/RestaurantContext';
-import { 
-  ChefHat, 
-  LogIn, 
-  ArrowRight, 
-  Clock, 
-  Sparkles, 
-  Smartphone, 
-  Smile, 
-  CheckCircle2, 
-  MapPin, 
+import {
+  ChefHat,
+  LogIn,
+  ArrowRight,
+  Clock,
+  Sparkles,
+  Smartphone,
+  Smile,
+  CheckCircle2,
+  MapPin,
   ChevronRight,
   UtensilsCrossed,
   ShieldCheck
@@ -47,7 +47,7 @@ export default function Landing() {
       dietary: ["Hot Seller"],
     },
     {
-      name: "Elous Pizza",
+      name: "your restaurants Pizza",
       description: "Our signature golden pizza made with fresh ingredients and spices.",
       price: 6.99,
       image: "https://i.pinimg.com/736x/d9/cb/5f/d9cb5fb5c6d0d7d3dc6f9a2926f47100.jpg",
@@ -355,7 +355,7 @@ export default function Landing() {
       {/* Call To Action Banner */}
       <section className="py-16 sm:py-24 relative overflow-hidden bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div 
+          <div
             className="rounded-[3rem] p-8 sm:p-12 md:p-16 flex flex-col items-center text-center space-y-6 md:space-y-8 relative overflow-hidden border border-primary/20"
             style={{ background: 'var(--gradient-primary)' }}
           >
@@ -413,7 +413,7 @@ export default function Landing() {
               </p>
               <p className="text-xs text-muted-foreground">
                 contact developer: ({tenantConfig.contactInfo.developer} - {tenantConfig.contactInfo.phone})
-                © {new Date().getFullYear()} {tenantConfig.appName}. All rights reserved. 
+                © {new Date().getFullYear()} {tenantConfig.appName}. All rights reserved.
               </p>
             </div>
 
@@ -423,16 +423,16 @@ export default function Landing() {
               <div className="space-y-1.5 text-xs sm:text-sm">
                 {settings?.opening_hours
                   ? (Object.entries(settings.opening_hours) as [string, { open: string; close: string; enabled: boolean }][]).map(([day, h]) => {
-                      const today = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][new Date().getDay()];
-                      const isToday = day === today;
-                      const fmt = (t: string) => { const [hr, m] = t.split(':').map(Number); const d = new Date(); d.setHours(hr, m); return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); };
-                      return (
-                        <p key={day} className={`flex justify-between gap-4 ${isToday ? 'font-bold text-foreground' : 'text-muted-foreground'}`}>
-                          <span className="capitalize">{day.slice(0,3)}{isToday ? ' ✦' : ''}</span>
-                          <span className={isToday ? 'text-primary' : ''}>{h.enabled ? `${fmt(h.open)} – ${fmt(h.close)}` : 'Closed'}</span>
-                        </p>
-                      );
-                    })
+                    const today = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][new Date().getDay()];
+                    const isToday = day === today;
+                    const fmt = (t: string) => { const [hr, m] = t.split(':').map(Number); const d = new Date(); d.setHours(hr, m); return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); };
+                    return (
+                      <p key={day} className={`flex justify-between gap-4 ${isToday ? 'font-bold text-foreground' : 'text-muted-foreground'}`}>
+                        <span className="capitalize">{day.slice(0, 3)}{isToday ? ' ✦' : ''}</span>
+                        <span className={isToday ? 'text-primary' : ''}>{h.enabled ? `${fmt(h.open)} – ${fmt(h.close)}` : 'Closed'}</span>
+                      </p>
+                    );
+                  })
                   : (
                     <p className="text-muted-foreground text-xs">Loading hours…</p>
                   )

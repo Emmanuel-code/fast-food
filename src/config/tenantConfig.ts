@@ -1,7 +1,7 @@
 export const tenantConfig = {
   // Brand Details
-  appName: "Elos Spot Kitchen",
-  appNameShort: "Elos Spot Kitchen", // For PWA name
+  appName: "your restaurant",
+  appNameShort: "your restaurant", // For PWA name
   description: "Order fresh, fast and delicious food from our kitchen directly to you.",
   contactInfo: {
     developer: "Jimah",
@@ -46,7 +46,7 @@ export const tenantConfig = {
 
   // Marketing Copy
   marketing: {
-    landingHeroTitle: "Elos Spot Kitchen",
+    landingHeroTitle: "your restaurant",
     landingHeroSubtitle: "Finest food experience with high culinary standards and real-time live ordering technology.",
     landingMenuIntro: "Handcrafted, fresh, and bursting with rich local flavor.",
     landingPWAIntro: "With off-line cache support, browse our menu and access your orders instantly like a native app without wasting app store space.",
@@ -57,7 +57,7 @@ export const tenantConfig = {
 
   // Email (used by the send-order-confirmation-email edge function via env vars)
   email: {
-    fromName: "Elou kitchen",
+    fromName: "your restaurant kitchen",
     fromAddress: "orders@chefskitchen.gh",
     footerTagline: "Thank you for ordering from our Kitchen! 🍽️",
   },
