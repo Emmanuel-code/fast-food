@@ -126,6 +126,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!currentProfile && !isEnsuringRef.current) {
           console.log('[AuthContext] Fetching/Ensuring profile for user...');
           isEnsuringRef.current = true;
+          setLoading(true); // <-- FIX: Set loading to true while fetching profile so RoleRoute doesn't redirect early
           ensureProfile(session.user)
             .then(p => {
               console.log('[AuthContext] ensureProfile resolved:', p ? `Profile ID: ${p.id}` : 'Null profile');
