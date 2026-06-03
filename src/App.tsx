@@ -29,6 +29,8 @@ import OrdersManager from '@/pages/manager/OrdersManager';
 import StaffManager from '@/pages/manager/StaffManager';
 import Settings from '@/pages/manager/Settings';
 import PromoCodesManager from '@/pages/manager/PromoCodesManager';
+import ReservationsManager from '@/pages/manager/ReservationsManager';
+import ReservationBooking from '@/pages/customer/ReservationBooking';
 
 const Spinner = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -87,6 +89,7 @@ function AppRoutes() {
 
       {/* Customer */}
       <Route path="/menu" element={<Home />} />
+      <Route path="/reserve" element={<ReservationBooking />} />
       <Route path="/menu/:id" element={<MenuItemDetail />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/checkout" element={<RoleRoute roles={['customer', 'admin', 'manager', 'worker']}><Checkout /></RoleRoute>} />
@@ -107,6 +110,7 @@ function AppRoutes() {
       <Route path="/dashboard/staff" element={<RoleRoute roles={['manager', 'admin']}><StaffManager /></RoleRoute>} />
       <Route path="/dashboard/settings" element={<RoleRoute roles={['manager', 'admin']}><Settings /></RoleRoute>} />
       <Route path="/dashboard/promos" element={<RoleRoute roles={['manager', 'admin']}><PromoCodesManager /></RoleRoute>} />
+      <Route path="/dashboard/reservations" element={<RoleRoute roles={['manager', 'admin']}><ReservationsManager /></RoleRoute>} />
 
       <Route path="*" element={<Navigate to="/menu" replace />} />
     </Routes>

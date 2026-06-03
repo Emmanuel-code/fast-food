@@ -1,13 +1,13 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Home, ShoppingCart, ClipboardList, MapPin, User } from 'lucide-react';
+import { Home, ShoppingCart, ClipboardList, MapPin, User, Calendar } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { to: '/menu', icon: Home, label: 'Menu' },
   { to: '/cart', icon: ShoppingCart, label: 'Cart' },
+  { to: '/reserve', icon: Calendar, label: 'Book' },
   { to: '/orders', icon: ClipboardList, label: 'Orders' },
-  { to: '/location', icon: MapPin, label: 'Find Us' },
   { to: '/profile', icon: User, label: 'Profile' },
 ];
 

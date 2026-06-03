@@ -1,7 +1,8 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, UtensilsCrossed, ClipboardList,
-  Users, Settings, LogOut, ChefHat, Menu as MenuIcon, Tag
+  Users, Settings, LogOut, ChefHat, Menu as MenuIcon, Tag,
+  Receipt, Calendar
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -15,9 +16,10 @@ interface StaffSidebarProps {
 }
 
 const managerNav = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/dashboard', icon: LayoutDashboard, label: 'Overview' },
+  { to: '/dashboard/orders', icon: Receipt, label: 'Order History' },
+  { to: '/dashboard/reservations', icon: Calendar, label: 'Reservations' },
   { to: '/dashboard/menu', icon: UtensilsCrossed, label: 'Menu Manager' },
-  { to: '/dashboard/orders', icon: ClipboardList, label: 'Orders' },
   { to: '/dashboard/promos', icon: Tag, label: 'Promo Codes' },
   { to: '/dashboard/staff', icon: Users, label: 'Staff' },
   { to: '/dashboard/settings', icon: Settings, label: 'Settings' },

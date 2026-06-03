@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Download, X, Sparkles, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
+import { tenantConfig } from '@/config/tenantConfig';
 // Helper component for Safari Share Icon
 function SafariShareIcon({ className }: { className?: string }) {
   return (

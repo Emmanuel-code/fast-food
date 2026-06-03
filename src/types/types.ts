@@ -1,6 +1,7 @@
 export type UserRole = 'customer' | 'worker' | 'manager' | 'admin';
 export type OrderType = 'pickup' | 'delivery' | 'curbside';
 export type OrderStatus = 'new' | 'accepted' | 'preparing' | 'ready' | 'completed' | 'cancelled';
+export type ReservationStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
 
 export interface Profile {
   id: string;
@@ -107,6 +108,32 @@ export interface Order {
   created_at: string;
   updated_at: string;
   profiles?: { name: string | null; email: string | null };
+}
+
+export interface Reservation {
+  id: string;
+  user_id: string | null;
+  customer_name: string;
+  customer_phone: string;
+  customer_email: string | null;
+  reservation_date: string; // YYYY-MM-DD
+  reservation_time: string; // HH:mm:ss
+  party_size: number;
+  special_requests: string | null;
+  status: ReservationStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AppNotification {
+  id: string;
+  user_id: string;
+  title: string;
+  message: string;
+  is_read: boolean;
+  order_id?: string;
+  order_number?: string;
+  created_at: string;
 }
 
 export interface DayHours {

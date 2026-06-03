@@ -57,37 +57,7 @@ const STAFF_MESSAGES: Record<string, { title: string; body: string }> = {
   },
 };
 
-interface NovuSubscriber {
-  subscriberId: string;
-  email?: string;
-  firstName?: string;
-}
 
-async function triggerNovu(
-  novuApiKey: string,
-  workflowId: string,
-  subscriber: NovuSubscriber,
-  payload: Record<string, unknown>
-): Promise<void> {
-  const res = await fetch("https://api.novu.co/v1/events/trigger", {
-    method: "POST",
-    headers: {
-      Authorization: `ApiKey ${novuApiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name: workflowId,
-      to: subscriber,
-      payload,
-    }),
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    console.error(`Novu trigger failed for subscriber ${subscriber.subscriberId}:`, text);
-  } else {
-    console.log(`Novu notification sent to ${subscriber.subscriberId} for status: ${payload.status}`);
-  }
-}
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -95,11 +65,7 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const novuApiKey = Deno.env.get("NOVU_SECRET_KEY");
-    if (!novuApiKey) {
-      console.warn("NOVU_SECRET_KEY not configured — skipping notification");
-      return ok({ sent: false, reason: "Novu not configured" });
-    }
+
 
     const { order_id, new_status } = await req.json();
     if (!order_id || !new_status) {
@@ -120,56 +86,53 @@ Deno.serve(async (req: Request) => {
 
     const customerProfile = order.profiles as { name: string | null; email: string | null } | null;
 
-    const triggers: Promise<void>[] = [];
+    const notificationsToInsert = [];
 
-    // Notify customer on status updates — pass email/name so Novu auto-creates the subscriber
+    // Notify customer
     const customerMsg = CUSTOMER_MESSAGES[new_status];
     if (customerMsg) {
-      const customerSubscriber: NovuSubscriber = {
-        subscriberId: order.user_id,
-        ...(customerProfile?.email ? { email: customerProfile.email } : {}),
-        ...(customerProfile?.name ? { firstName: customerProfile.name.split(" ")[0] } : {}),
-      };
-      triggers.push(
-        triggerNovu(novuApiKey, "order-status-update", customerSubscriber, {
-          title: customerMsg.title,
-          body: `${customerMsg.body} (Order #${order.order_number})`,
-          order_id,
-          order_number: order.order_number,
-          status: new_status,
-        })
-      );
+      notificationsToInsert.push({
+        user_id: order.user_id,
+        title: customerMsg.title,
+        message: `${customerMsg.body} (Order #${order.order_number})`,
+        order_id: order_id,
+        order_number: order.order_number
+      });
     }
 
-    // Notify all staff on new orders or cancellations
+    // Notify all staff
     const staffMsg = STAFF_MESSAGES[new_status];
     if (staffMsg) {
       const { data: staffProfiles } = await supabase
         .from("profiles")
-        .select("id, name, email")
+        .select("id")
         .in("role", ["manager", "admin", "staff", "chef"]);
 
       if (staffProfiles?.length) {
-        for (const staffMember of staffProfiles as { id: string; name: string | null; email: string | null }[]) {
-          const staffSubscriber: NovuSubscriber = {
-            subscriberId: staffMember.id,
-            ...(staffMember.email ? { email: staffMember.email } : {}),
-            ...(staffMember.name ? { firstName: staffMember.name.split(" ")[0] } : {}),
-          };
-          triggers.push(
-            triggerNovu(novuApiKey, "order-status-update", staffSubscriber, {
-              title: staffMsg.title,
-              body: `${staffMsg.body} (Order #${order.order_number})`,
-              order_id,
-              order_number: order.order_number,
-              status: new_status,
-            })
-          );
+        for (const staffMember of staffProfiles) {
+          notificationsToInsert.push({
+            user_id: staffMember.id,
+            title: staffMsg.title,
+            message: `${staffMsg.body} (Order #${order.order_number})`,
+            order_id: order_id,
+            order_number: order.order_number
+          });
         }
       }
     }
 
-    await Promise.allSettled(triggers);
+    if (notificationsToInsert.length > 0) {
+      const { error: insertErr } = await supabase
+        .from("notifications")
+        .insert(notificationsToInsert);
+        
+      if (insertErr) {
+        console.error("Failed to insert notifications:", insertErr);
+      } else {
+        console.log(`Inserted ${notificationsToInsert.length} notifications`);
+      }
+    }
+
     return ok({ sent: true, status: new_status, order_number: order.order_number });
   } catch (err) {
     console.error("send-order-notification error:", err);
